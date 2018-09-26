@@ -16,27 +16,43 @@
 <script>
   var canvas = d3.select("body")
     .append("svg")
-    .attr("width", 500)
-    .attr("height", 500)
+    .attr("width", 1500)
+    .attr("height", 1500)
 
   var data = [
-    { x: 10, y: 20 }, { x: 300, y: 55 }, { x: 270, y: 40 }
+    10, 20, 30
   ]
 
-  var group = canvas.append("g")
-    .attr("transform", "translate(100,200)");
+  var r = 300;
 
-  var r = 100;
-  var p = Math.PI * 2;
+  var color = d3.scaleOrdinal()
+    .range(["red", "blue", "orange"])
+
+  var group = canvas.append("g")
+    .attr("transform", "translate(300,300) ")
 
   var arc = d3.arc()
-    .innerRadius(r - 20)
+    .innerRadius(200)
     .outerRadius(r)
-    .startAngle(0)
-    .endAngle(p)
 
-  group.append("path")
+  var pie = d3.pie()
+    .value(function (d) { return d })
+
+  var arcs = group.selectAll(".arc")
+    .data(pie(data))
+    .enter()
+    .append("g")
+    .attr("class", "arc")
+
+  arcs.append("path")
     .attr("d", arc)
+    .attr("fill", function (d) { return color(d.data) })
+
+  arcs.append("text")
+    .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")" })
+    .attr("text-anchor", "middle")
+    .attr("font-size", "1.5em")
+    .text(function (d) { return d.data })
 
 </script>
 
