@@ -11,15 +11,22 @@ class App extends Component {
     };
   }
   componentDidMount() {
-    Promise.all([fetch(`${process.env.PUBLIC_URL}/am.json`)])
-      .then(responses => Promise.all(responses.map(resp => resp.json())))
-      .then(am => {
-        am.forEach(day => (day.date = new Date(day.date)));
-        this.setState({ temps: { am } });
-      });
+    let promise = new Promise((resolve, reject) => {
+      resolve(fetch(`${process.env.PUBLIC_URL}/am.json`));
+    });
+
+    promise.then(response => response.json()).then(am => {
+      am.forEach(day => (day.date = new Date(day.date)));
+      this.setState({ temps: { am } });
+    });
+    // .then(am => {
+    //   am.forEach(day => (day.date = new Date(day.date)));
+    //   this.setState({ temps: { am } });
+    // });
   }
   render() {
     const data = this.state.temps[this.state.city];
+    console.log(data);
     return (
       <div className="App">
         <Chart data={data} />
