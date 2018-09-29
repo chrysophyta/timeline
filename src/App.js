@@ -1,35 +1,28 @@
 import React, { Component } from 'react';
 import './App.css';
-import ProgressArc from './ProgressArc';
+import Chart from './Chart';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      percentComplete: 0.3
+      temps: {},
+      city: 'am'
     };
-    this.togglePercent = this.togglePercent.bind(this);
   }
-  togglePercent() {
-    const percentage = this.state.percentComplete === 0.3 ? 0.7 : 0.3;
-    this.setState({ percentComplete: percentage });
+  componentDidMount() {
+    Promise.all([fetch(`${process.env.PUBLIC_URL}/am.json`)])
+      .then(responses => Promise.all(responses.map(resp => resp.json())))
+      .then(am => {
+        am.forEach(day => (day.date = new Date(day.date)));
+        this.setState({ temps: { am } });
+      });
   }
   render() {
-    console.log(this.state.percentComplete);
+    const data = this.state.temps[this.state.city];
     return (
       <div className="App">
-        <a onClick={this.togglePercent}>Toggle Arc</a>
-        <ProgressArc
-          height={300}
-          width={300}
-          innerRadius={100}
-          outerRadius={110}
-          id="d3-arc"
-          backgroundColor="#e6e6e6"
-          foregroundColor="#00ff00"
-          percentComplete={this.state.percentComplete}
-          duration={2000}
-        />
+        <Chart data={data} />
       </div>
     );
   }
