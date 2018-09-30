@@ -19,10 +19,6 @@ class App extends Component {
       am.forEach(day => (day.date = new Date(day.date)));
       this.setState({ temps: { am } });
     });
-    // .then(am => {
-    //   am.forEach(day => (day.date = new Date(day.date)));
-    //   this.setState({ temps: { am } });
-    // });
   }
   render() {
     const data = this.state.temps[this.state.city];
